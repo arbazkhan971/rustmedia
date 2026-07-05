@@ -486,9 +486,41 @@ fn audio_config_box(track: &MuxTrack) -> Option<Vec<u8>> {
     match track.codec {
         Codec::Aac => Some(build_esds(0x40, track.codec_private.as_deref())),
         Codec::Mp3 => Some(build_esds(0x6B, track.codec_private.as_deref())),
-        Codec::Opus => track.codec_private.as_deref().map(|cp| atom(b"dOps", cp)),
+        Codec::Opus => track.codec_private.as_deref().map(build_dops),
         Codec::Flac => track.codec_private.as_deref().map(|cp| atom(b"dfLa", cp)),
         _ => None,
+    }
+}
+
+/// Build a `dOps` (Opus in ISO-BMFF) box.
+///
+/// Matroska/Ogg carry Opus init data as an `OpusHead` header (little-endian,
+/// with an 8-byte magic and a version byte). MP4's `dOps` payload is the same
+/// fields but big-endian and without the magic/version. Convert when we see an
+/// `OpusHead`; otherwise assume the bytes are already a `dOps` payload.
+fn build_dops(cp: &[u8]) -> Vec<u8> {
+    if cp.starts_with(b"OpusHead") && cp.len() >= 19 {
+        let channels = cp[9];
+        let pre_skip = u16::from_le_bytes([cp[10], cp[11]]);
+        let input_rate = u32::from_le_bytes([cp[12], cp[13], cp[14], cp[15]]);
+        let output_gain = u16::from_le_bytes([cp[16], cp[17]]);
+        let mapping_family = cp[18];
+
+        let mut w = Writer::new();
+        w.u8(0) // dOps version
+            .u8(channels)
+            .u16(pre_skip)
+            .u32(input_rate)
+            .u16(output_gain)
+            .u8(mapping_family);
+        if mapping_family != 0 {
+            // StreamCount, CoupledCount, ChannelMapping[] follow with the same
+            // layout in both OpusHead and dOps.
+            w.bytes(&cp[19..]);
+        }
+        atom(b"dOps", w.as_slice())
+    } else {
+        atom(b"dOps", cp)
     }
 }
 
