@@ -14,6 +14,12 @@ use rustmedia_io::ReadBytes;
 
 use super::boxes::boxes_in;
 
+/// Upper bound on speculative pre-allocation for sample-table vectors. Entry
+/// counts come from the (untrusted) file, so a corrupt count must not be able
+/// to request gigabytes up front — the vectors grow past this only as real
+/// bytes are actually read.
+const MAX_TABLE_PREALLOC: usize = 1 << 20;
+
 /// A single flattened sample: where its bytes are and when it plays.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct Sample {
@@ -105,7 +111,7 @@ fn flatten(raw: &RawTables) -> Result<Vec<Sample>> {
         return Ok(Vec::new());
     }
 
-    let mut samples = Vec::with_capacity(sample_count);
+    let mut samples = Vec::with_capacity(sample_count.min(MAX_TABLE_PREALLOC));
 
     // 1. Assign each sample to a chunk and compute its byte offset.
     //    stsc runs describe how many samples each chunk holds; the final run
@@ -216,7 +222,7 @@ fn parse_runs_u32(data: &[u8]) -> Result<Vec<(u32, u32)>> {
     let mut c = Cursor::new(data);
     skip_full_header(&mut c)?;
     let count = c.read_u32_be()?;
-    let mut out = Vec::with_capacity(count as usize);
+    let mut out = Vec::with_capacity((count as usize).min(MAX_TABLE_PREALLOC));
     for _ in 0..count {
         let a = c.read_u32_be()?;
         let b = c.read_u32_be()?;
@@ -229,7 +235,7 @@ fn parse_ctts(data: &[u8]) -> Result<Vec<(u32, i32)>> {
     let mut c = Cursor::new(data);
     let full = super::boxes::read_full_box_header(&mut c)?;
     let count = c.read_u32_be()?;
-    let mut out = Vec::with_capacity(count as usize);
+    let mut out = Vec::with_capacity((count as usize).min(MAX_TABLE_PREALLOC));
     for _ in 0..count {
         let sample_count = c.read_u32_be()?;
         // Version 1 stores signed offsets; version 0 unsigned (but fits i32
@@ -248,7 +254,7 @@ fn parse_stsc(data: &[u8]) -> Result<Vec<(u32, u32)>> {
     let mut c = Cursor::new(data);
     skip_full_header(&mut c)?;
     let count = c.read_u32_be()?;
-    let mut out = Vec::with_capacity(count as usize);
+    let mut out = Vec::with_capacity((count as usize).min(MAX_TABLE_PREALLOC));
     for _ in 0..count {
         let first_chunk = c.read_u32_be()?;
         let samples_per_chunk = c.read_u32_be()?;
@@ -269,7 +275,7 @@ fn parse_stsz(data: &[u8]) -> Result<SampleSizes> {
             count: sample_count,
         });
     }
-    let mut sizes = Vec::with_capacity(sample_count as usize);
+    let mut sizes = Vec::with_capacity((sample_count as usize).min(MAX_TABLE_PREALLOC));
     for _ in 0..sample_count {
         sizes.push(c.read_u32_be()?);
     }
@@ -283,7 +289,7 @@ fn parse_stz2(data: &[u8]) -> Result<SampleSizes> {
     let _reserved = c.read_u24_be()?;
     let field_size = c.read_u8()?;
     let sample_count = c.read_u32_be()?;
-    let mut sizes = Vec::with_capacity(sample_count as usize);
+    let mut sizes = Vec::with_capacity((sample_count as usize).min(MAX_TABLE_PREALLOC));
     match field_size {
         16 => {
             for _ in 0..sample_count {
@@ -322,7 +328,7 @@ fn parse_stco(data: &[u8]) -> Result<Vec<u64>> {
     let mut c = Cursor::new(data);
     skip_full_header(&mut c)?;
     let count = c.read_u32_be()?;
-    let mut out = Vec::with_capacity(count as usize);
+    let mut out = Vec::with_capacity((count as usize).min(MAX_TABLE_PREALLOC));
     for _ in 0..count {
         out.push(u64::from(c.read_u32_be()?));
     }
@@ -333,7 +339,7 @@ fn parse_co64(data: &[u8]) -> Result<Vec<u64>> {
     let mut c = Cursor::new(data);
     skip_full_header(&mut c)?;
     let count = c.read_u32_be()?;
-    let mut out = Vec::with_capacity(count as usize);
+    let mut out = Vec::with_capacity((count as usize).min(MAX_TABLE_PREALLOC));
     for _ in 0..count {
         out.push(c.read_u64_be()?);
     }
@@ -344,7 +350,7 @@ fn parse_sync_samples(data: &[u8]) -> Result<Vec<u32>> {
     let mut c = Cursor::new(data);
     skip_full_header(&mut c)?;
     let count = c.read_u32_be()?;
-    let mut out = Vec::with_capacity(count as usize);
+    let mut out = Vec::with_capacity((count as usize).min(MAX_TABLE_PREALLOC));
     for _ in 0..count {
         out.push(c.read_u32_be()?);
     }

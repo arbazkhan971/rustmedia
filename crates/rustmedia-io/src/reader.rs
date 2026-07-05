@@ -26,10 +26,27 @@ pub trait ReadBytes: Read {
         Ok(buf)
     }
 
-    /// Read `n` bytes into a freshly allocated `Vec`.
+    /// Read exactly `n` bytes into a freshly allocated `Vec`.
+    ///
+    /// The size `n` often comes from the file being parsed and is therefore
+    /// untrusted: a corrupt length field must not be able to trigger a huge
+    /// speculative allocation. So rather than pre-allocating `n` bytes, this
+    /// reads *what the stream actually provides* (capped at `n`) and only then
+    /// checks that the full `n` bytes arrived — a truncated or lying length
+    /// yields [`Error::UnexpectedEof`], not an out-of-memory abort.
     fn read_vec(&mut self, n: usize) -> Result<Vec<u8>> {
-        let mut buf = vec![0u8; n];
-        self.read_exact(&mut buf).map_err(|e| eof(e, "byte run"))?;
+        // Cap the initial allocation; the buffer grows as real bytes arrive.
+        // The reborrow (`&mut *self`) yields a `Sized` reader so `take` applies
+        // even when `Self` is `?Sized`.
+        const INITIAL_CAP: usize = 64 * 1024;
+        let mut buf = Vec::with_capacity(n.min(INITIAL_CAP));
+        let read = (&mut *self)
+            .take(n as u64)
+            .read_to_end(&mut buf)
+            .map_err(|e| eof(e, "byte run"))?;
+        if read != n {
+            return Err(Error::UnexpectedEof("byte run".to_string()));
+        }
         Ok(buf)
     }
 
