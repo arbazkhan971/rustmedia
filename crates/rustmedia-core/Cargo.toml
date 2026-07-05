@@ -1,0 +1,26 @@
+[package]
+name = "rustmedia-core"
+description = "Core types (tracks, packets, codecs, timestamps, errors) shared across the RustMedia media toolkit."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+# `serde` is optional so that the core type vocabulary has *zero* mandatory
+# dependencies. Enable the `serde` feature to derive (De)Serialize on the
+# public types (used by the CLI's `--json` output).
+serde = { workspace = true, optional = true }
+
+[features]
+default = []
+serde = ["dep:serde"]
+
+[lints]
+workspace = true

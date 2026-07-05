@@ -1,0 +1,11 @@
+[package]
+name = "xtask"
+description = "Development tasks for RustMedia (test-fixture generation, etc.)."
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+
+[lints]
+workspace = true

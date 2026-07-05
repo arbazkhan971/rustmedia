@@ -1,0 +1,17 @@
+/target
+**/*.rs.bk
+*.pdb
+Cargo.lock.orig
+
+# Generated test media (produced by `cargo xtask gen-fixtures`); the tiny
+# committed fixtures live under testdata/ and are tracked explicitly.
+/testdata/generated/
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# WASM build output
+/crates/rustmedia-wasm/pkg/

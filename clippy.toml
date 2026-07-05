@@ -1,0 +1,20 @@
+# Proper nouns and identifiers that appear throughout RustMedia's docs. Listing
+# them here keeps clippy's `doc_markdown` lint on (it still flags genuine
+# code-like words that forgot their backticks) without fighting our prose.
+doc-valid-idents = [
+    "RustMedia",
+    "MediaBunny",
+    "FFmpeg",
+    "GStreamer",
+    "Symphonia",
+    "WebM",
+    "Matroska",
+    "QuickTime",
+    "WebVTT",
+    "SubRip",
+    "SubStation",
+    "ISO-BMFF",
+    "iTunes",
+    "ProRes",
+    "..",
+]
