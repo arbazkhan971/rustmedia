@@ -131,9 +131,10 @@ ops::trim("clip.mp4", "cut.mp4", &TrimOptions {
 |---------------|:-------:|:-----:|:---:|---------------------------------------------------|
 | MP4 / M4A     |   ✅    |  ✅   | ✅  | ISO‑BMFF, non‑fragmented, `co64`, `ctts`, iTunes tags, chapters |
 | MOV           |   ✅    |  ✅   | ✅  | QuickTime, shares the ISO‑BMFF engine             |
+| Matroska      |   ✅    |  ✅   | —   | EBML, VP8/9/AV1/H.264, Opus/Vorbis, Xiph/EBML/fixed lacing |
+| WebM          |   ✅    |  ✅   | —   | Matroska subset, distinguished by `DocType`       |
 | WAV           |   ✅    |  ✅   | —   | RIFF PCM/float, `LIST`/`INFO` tags                |
 | MP3           |   ✅    |  ✅   | via MP4 | Frame sync, Xing/Info VBR, ID3v2 + ID3v1     |
-| Matroska/WebM |   🚧    |  🚧   | 🚧  | On the roadmap                                    |
 
 **Codecs recognized:** H.264, H.265/HEVC, AV1, VP8/VP9, AAC, MP3, Opus, FLAC,
 ALAC, AC‑3/E‑AC‑3, PCM variants, and timed text — with codec‑init data (`avcC`,
@@ -164,7 +165,8 @@ Python bindings all speak the same vocabulary. See [`docs/architecture.md`](docs
 
 ## Roadmap
 
-- [ ] Matroska / WebM demux + mux (EBML)
+- [x] Matroska / WebM demux (EBML) — ✅ shipped
+- [ ] Matroska / WebM muxing
 - [ ] Fragmented MP4 (`moof`/`traf`) and HLS/DASH segmenting
 - [ ] FLAC and Ogg/Opus native containers
 - [ ] WebAssembly build (`rustmedia-wasm`) for in‑browser processing
