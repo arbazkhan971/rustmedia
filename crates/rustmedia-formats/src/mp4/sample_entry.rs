@@ -64,10 +64,12 @@ fn parse_video_entry(format: &FourCc, body: &[u8]) -> StsdInfo {
     // itself is 8 bytes). Layout of `body`:
     //   [0..6]  reserved   [6..8]  data_reference_index
     //   [8..10] predefined [10..12] reserved [12..24] predefined[3]
-    //   [24..26] width     [26..28] height    ... [78..] child boxes
+    //   [24..26] width     [26..28] height    [74..76] depth   [78..] children
+    // The `depth` field (usually 24) describes colour depth, not the codec's
+    // per-component bit depth, so we do not derive `bit_depth` from it — that
+    // must come from the codec config (SPS / vpcC / av1C) if needed.
     let width = read_u16(body, 24);
     let height = read_u16(body, 26);
-    let depth = read_u16(body, 76);
     let children = body.get(78..).unwrap_or(&[]);
 
     let mut codec = video_codec_from_fourcc(format);
@@ -96,12 +98,6 @@ fn parse_video_entry(format: &FourCc, body: &[u8]) -> StsdInfo {
         }
     }
 
-    let bit_depth = match depth {
-        24 | 32 => Some(8u8),
-        d if d != 0 && d % 3 == 0 => Some((d / 3) as u8),
-        _ => None,
-    };
-
     StsdInfo {
         codec,
         parameters: TrackParameters::Video(VideoParameters {
@@ -109,7 +105,7 @@ fn parse_video_entry(format: &FourCc, body: &[u8]) -> StsdInfo {
             height: u32::from(height),
             frame_rate: None, // filled in from the sample table by the demuxer
             display_aspect_ratio: None,
-            bit_depth,
+            bit_depth: None, // derived from codec config later, not the depth field
         }),
         codec_private,
     }
