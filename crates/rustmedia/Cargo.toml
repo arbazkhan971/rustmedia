@@ -1,0 +1,27 @@
+[package]
+name = "rustmedia"
+description = "Fast, safe, FFmpeg-free media toolkit for Rust: inspect, parse, mux, demux, remux, and trim MP4, MOV, MKV, WebM, WAV, and MP3."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+readme = "../../README.md"
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+rustmedia-core = { workspace = true }
+rustmedia-io = { workspace = true }
+rustmedia-formats = { workspace = true }
+
+[features]
+default = []
+# Re-export serde derives on the core vocabulary types.
+serde = ["rustmedia-core/serde"]
+
+[lints]
+workspace = true

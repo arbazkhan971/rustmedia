@@ -1,0 +1,20 @@
+[package]
+name = "rustmedia-formats"
+description = "Native container parsers and muxers (MP4/MOV, Matroska/WebM, WAV, MP3) for the RustMedia toolkit — no FFmpeg."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+rustmedia-core = { workspace = true }
+rustmedia-io = { workspace = true }
+
+[lints]
+workspace = true

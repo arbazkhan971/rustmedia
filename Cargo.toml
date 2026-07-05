@@ -1,0 +1,72 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/rustmedia-core",
+    "crates/rustmedia-io",
+    "crates/rustmedia-formats",
+    "crates/rustmedia",
+    "crates/rustmedia-cli",
+    "xtask",
+]
+# rustmedia-wasm is excluded from the default set; it is built with a wasm target.
+exclude = ["crates/rustmedia-wasm"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+license = "MIT OR Apache-2.0"
+authors = ["The RustMedia Authors"]
+repository = "https://github.com/rustmedia/rustmedia"
+homepage = "https://github.com/rustmedia/rustmedia"
+documentation = "https://docs.rs/rustmedia"
+readme = "README.md"
+keywords = ["media", "mp4", "video", "audio", "demuxer"]
+categories = ["multimedia", "multimedia::video", "multimedia::audio", "parser-implementations"]
+
+[workspace.dependencies]
+rustmedia-core = { version = "0.1.0", path = "crates/rustmedia-core" }
+rustmedia-io = { version = "0.1.0", path = "crates/rustmedia-io" }
+rustmedia-formats = { version = "0.1.0", path = "crates/rustmedia-formats" }
+rustmedia = { version = "0.1.0", path = "crates/rustmedia" }
+
+# Third-party dependencies are pinned here so every crate shares one version.
+clap = { version = "4.5", features = ["derive"] }
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Lints shared across the whole workspace. Kept strict so the codebase stays
+# idiomatic and safe; individual `allow`s must be justified at the use-site.
+[workspace.lints.rust]
+missing_docs = "warn"
+unsafe_code = "warn"
+unreachable_pub = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# A handful of pedantic lints are noisy for a parsing-heavy codebase.
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+must_use_candidate = "allow"
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+cast_possible_wrap = "allow"
+cast_precision_loss = "allow"
+too_many_lines = "allow"
+
+# Optimised profile for the release binaries and benchmarks.
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+# `bench` inherits from release but must keep unwinding for criterion.
+[profile.bench]
+lto = "thin"
+codegen-units = 1

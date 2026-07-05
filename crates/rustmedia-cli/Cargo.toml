@@ -1,0 +1,24 @@
+[package]
+name = "rustmedia-cli"
+description = "The `rustmedia` command-line tool: inspect, remux, trim, and extract media files."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+
+[[bin]]
+name = "rustmedia"
+path = "src/main.rs"
+
+[dependencies]
+rustmedia = { workspace = true, features = ["serde"] }
+clap = { workspace = true }
+anyhow = { workspace = true }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true
