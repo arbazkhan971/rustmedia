@@ -22,7 +22,7 @@ You need:
   (`apt install ffmpeg`, `brew install ffmpeg`, …).
 
 ```bash
-git clone https://github.com/rustmedia/rustmedia
+git clone https://github.com/arbazkhan971/rustmedia
 cd rustmedia
 cargo build
 
@@ -147,7 +147,7 @@ full‑featured one.
 
 ## Where to ask questions
 
-- **Bugs and feature ideas:** open a [GitHub issue](https://github.com/rustmedia/rustmedia/issues).
+- **Bugs and feature ideas:** open a [GitHub issue](https://github.com/arbazkhan971/rustmedia/issues).
 - **Design discussion / "is this a good approach?":** open a draft PR or a
   discussion thread before writing a lot of code — we're happy to help you shape
   it early.

@@ -1,6 +1,6 @@
 //! # rustmedia-io
 //!
-//! Byte-level I/O primitives for the [RustMedia](https://github.com/rustmedia/rustmedia)
+//! Byte-level I/O primitives for the [RustMedia](https://github.com/arbazkhan971/rustmedia)
 //! toolkit: endian-aware reading ([`ReadBytes`]) and seekable sources
 //! ([`Source`]).
 //!

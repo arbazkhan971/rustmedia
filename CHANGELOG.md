@@ -32,4 +32,4 @@ adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   hostile input), GitHub Actions CI (fmt, clippy `-D warnings`, cross-platform
   tests, MSRV, rustdoc, cargo-deny) and release automation.
 
-[Unreleased]: https://github.com/rustmedia/rustmedia/commits/main
+[Unreleased]: https://github.com/arbazkhan971/rustmedia/commits/main
