@@ -11,22 +11,20 @@ open an issue or a PR; see [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 ## Where we are
 
 RustMedia today is a native, zero‑`unsafe` engine that can inspect, remux, trim,
-and extract **MP4/MOV, WAV, and MP3** — all losslessly, with no FFmpeg and no C
-dependencies. The trait‑based core (`Demuxer`/`Muxer`) and the shared type
-vocabulary in `rustmedia-core` are designed so that new formats and new
-front‑ends slot in without reshaping the engine. That foundation is what the
+and extract **MP4/MOV, Matroska/WebM, WAV, and MP3** — all losslessly, with no
+FFmpeg and no C dependencies. The trait‑based core (`Demuxer`/`Muxer`) and the
+shared type vocabulary in `rustmedia-core` are designed so that new formats and
+new front‑ends slot in without reshaping the engine. That foundation is what the
 roadmap builds on.
 
 ## Near‑term
 
 The next containers and edits, building directly on the existing engine.
 
-- **Matroska / WebM demux + mux (EBML).** The single most requested format and
-  the top priority. Matroska is the lingua franca of modern video, and WebM is
-  its web‑native subset. Detection already recognizes the EBML magic and the
-  `DocType` split; what's left is the EBML parser and the muxer. Landing this
-  also unlocks the Vorbis, SubRip, and ASS codecs already named in the
-  vocabulary.
+- **✅ Matroska / WebM demux (EBML) — shipped.** The EBML parser reads MKV and
+  WebM (VP8/9, AV1, H.264/265, Opus, Vorbis, FLAC, PCM, subtitles) with lacing
+  support, and their tracks remux losslessly into MP4. Still open: a Matroska
+  **muxer**, `Cues`‑based **seeking**, and surfacing chapters/`Tags`.
 - **Fragmented MP4 (`moof`/`traf`).** Fragmented ISO‑BMFF is how streaming and
   live capture ship video (DASH, CMAF, MSE). Supporting it makes RustMedia a
   first‑class citizen for adaptive‑streaming pipelines and for reading files

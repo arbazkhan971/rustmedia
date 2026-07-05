@@ -19,15 +19,15 @@ Legend: ✅ supported · — not applicable · 🚧 planned (see the
 | MOV (QuickTime) |   ✅    |  ✅   | ✅  | ✅   | `ftyp` major brand `qt  ` |
 | WAV             |   ✅    |  ✅   | —   | ✅   | `RIFF`…`WAVE` |
 | MP3             |   ✅    |  ✅   | via MP4 | ~ | `ID3` tag or MPEG frame sync |
-| Matroska / MKV  |   🚧    |  🚧   | 🚧  | 🚧  | EBML `1A 45 DF A3` |
-| WebM            |   🚧    |  🚧   | 🚧  | 🚧  | EBML + `DocType webm` |
+| Matroska / MKV  |   ✅    |  ✅   | —   | 🚧  | EBML `1A 45 DF A3` |
+| WebM            |   ✅    |  ✅   | —   | 🚧  | EBML + `DocType webm` |
 | FLAC (native)   |   🚧    |  🚧   | 🚧  | 🚧  | `fLaC` |
 | Ogg             |   🚧    |  🚧   | 🚧  | 🚧  | `OggS` |
 
-**Detection vs. parsing.** RustMedia's byte sniffer already recognizes the magic
-of Matroska/WebM, FLAC, and Ogg, but no demuxer is wired up for them yet, so
-`open()` returns an `Unsupported` error (not `UnknownFormat`) for those files.
-That's deliberate: the vocabulary is in place ahead of the parsers.
+**Detection vs. parsing.** RustMedia's byte sniffer also recognizes FLAC (`fLaC`)
+and Ogg (`OggS`), but no demuxer is wired up for those two yet, so `open()`
+returns an `Unsupported` error (not `UnknownFormat`) for them. That's deliberate:
+the vocabulary is in place ahead of the parsers.
 
 ---
 
@@ -103,6 +103,32 @@ as `Codec::Other`.
   without a Xing TOC, position is estimated from the average bitrate.
 - Free‑format and MPEG‑2.5 streams are best‑effort.
 
+## Matroska / WebM (EBML)
+
+MKV and WebM share one EBML engine; WebM is distinguished by its `DocType`.
+
+**Parsed on demux**
+
+- **Tracks:** video, audio, and subtitle `TrackEntry`s with codec ID → `Codec`,
+  timescale (from the segment `TimestampScale`), `CodecPrivate` init data, name,
+  and language.
+- **Codec parameters:** pixel width/height and `DefaultDuration` → frame rate for
+  video; sampling frequency, channels, and bit depth for audio.
+- **Packets:** streamed from `Cluster` `SimpleBlock`s and `BlockGroup`s, with
+  **Xiph, EBML, and fixed‑size lacing** unpacked and keyframe flags recovered.
+- **Metadata:** segment `Title` and writing/muxing app.
+
+**Codecs recognized:** VP8, VP9, AV1, H.264, H.265, Opus, Vorbis, FLAC, AAC, MP3,
+PCM (int/float), and `S_TEXT` subtitles (SRT, ASS/SSA, WebVTT).
+
+**Known limitations**
+
+- **No Matroska muxer yet** — MKV/WebM are read‑only (but their tracks remux
+  losslessly *into MP4*, e.g. Opus via an `OpusHead` → `dOps` conversion).
+- **Seeking is not yet implemented** for Matroska (`Cues` are not consulted);
+  `seek()` returns `Unsupported`.
+- Chapters and Matroska `Tags` are not yet surfaced.
+
 ---
 
 ## Codec recognition matrix
@@ -137,12 +163,12 @@ carried losslessly; "Mux" = can be written into that container.
 ¹ Named from the WAV `fmt ` format tag; RustMedia reads the WAV container's
 metadata but does not extract these embedded streams as separate outputs.
 
-**Codecs in the vocabulary, not yet produced by any parser.** The `Codec` enum
-also models **Vorbis**, **SubRip (SRT)**, and **ASS/SSA**. These are reserved
-names with no current recognition path — they'll start appearing once the
-Ogg and Matroska demuxers land, since those are the containers that carry them.
-The enum is `#[non_exhaustive]`, so more codecs can be added without a breaking
-change.
+**Matroska / WebM demux adds** VP8, VP9, AV1, H.264, H.265, Opus, **Vorbis**,
+FLAC, AAC, MP3, PCM, and the subtitle codecs **SubRip**, **ASS/SSA**, and
+**WebVTT** — so the codecs the table above marks MP4‑only are also read from
+Matroska. The only remaining vocabulary‑only names are those that arrive with
+the not‑yet‑implemented **Ogg** demuxer. The `Codec` enum is `#[non_exhaustive]`,
+so more codecs can be added without a breaking change.
 
 **Anything unrecognized** surfaces as `Codec::Other("<id>")` (carrying the raw
 fourcc or container codec ID) or `Codec::Unknown`, and the packets are still

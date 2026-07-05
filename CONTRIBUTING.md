@@ -112,8 +112,8 @@ the work is the same for every format:
 1. **Teach detection.** Add the container's magic bytes to `detect_bytes` in
    [`crates/rustmedia-formats/src/detect.rs`](crates/rustmedia-formats/src/detect.rs),
    returning the matching `ContainerFormat`. (The `ContainerFormat` enum in
-   `rustmedia-core` already has variants for the planned formats — Matroska,
-   WebM, FLAC, Ogg — so most of the time you won't need to add one.)
+   `rustmedia-core` already has variants for the not‑yet‑parsed formats — FLAC
+   and Ogg — so most of the time you won't need to add one.)
 2. **Write the demuxer.** Add a module under
    `crates/rustmedia-formats/src/` (e.g. `matroska.rs`) with a type that
    implements the [`Demuxer`](crates/rustmedia-formats/src/demux.rs) trait:

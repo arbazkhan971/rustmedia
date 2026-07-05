@@ -25,8 +25,8 @@
 //!
 //! - [`rustmedia_core`] — the dependency-free type vocabulary.
 //! - [`rustmedia_io`] — endian-aware readers and seekable sources.
-//! - [`rustmedia_formats`] — the native container parsers and the
-//!   [`Demuxer`](rustmedia_formats::Demuxer) trait.
+//! - [`rustmedia_formats`] — the native container parsers and the [`Demuxer`]
+//!   trait.
 
 mod media;
 pub mod ops;

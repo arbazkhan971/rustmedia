@@ -1,8 +1,8 @@
 //! High-level, lossless media operations: [`remux`], [`trim`], and [`extract`].
 //!
 //! All three copy coded packets straight from the input to a new container
-//! without decoding or re-encoding. They share one engine ([`copy_stream`]) and
-//! differ only in which tracks and time range they keep.
+//! without decoding or re-encoding. They share one internal engine and differ
+//! only in which tracks and time range they keep.
 
 use std::collections::{HashMap, HashSet};
 use std::io::BufWriter;
