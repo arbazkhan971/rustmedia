@@ -16,5 +16,12 @@ categories.workspace = true
 rustmedia-core = { workspace = true }
 rustmedia-io = { workspace = true }
 
+[dev-dependencies]
+criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
+
+[[bench]]
+name = "demux"
+harness = false
+
 [lints]
 workspace = true

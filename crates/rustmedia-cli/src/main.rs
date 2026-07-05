@@ -11,8 +11,8 @@ use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
 
-/// Fast, safe, FFmpeg-free media toolkit: inspect, and (soon) remux, trim, and
-/// extract media files.
+/// Fast, safe, FFmpeg-free media toolkit: inspect, remux, trim, and extract
+/// MP4, MOV, WAV, and MP3 files.
 #[derive(Parser, Debug)]
 #[command(
     name = "rustmedia",
