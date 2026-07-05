@@ -12,8 +12,12 @@
 
 mod boxes;
 mod meta;
+mod mux;
 mod sample_entry;
 mod sample_table;
+mod writer;
+
+pub use mux::Mp4Muxer;
 
 use std::io::{Read, Seek};
 use std::time::Duration;

@@ -29,8 +29,10 @@
 //!   [`Demuxer`](rustmedia_formats::Demuxer) trait.
 
 mod media;
+pub mod ops;
 
 pub use media::{Media, MediaError, Packets};
+pub use ops::{extract, remux, trim, CopyStats, TrackSelector, TrimOptions};
 
 // Re-export the core type vocabulary so `use rustmedia::*` is enough.
 pub use rustmedia_core::{
