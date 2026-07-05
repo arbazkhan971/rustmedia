@@ -32,7 +32,9 @@ RustMedia is pre‑1.0. Security fixes are made against the latest `0.1.x` relea
 
 **Please do not report security issues through public GitHub issues.**
 
-Email **security@rustmedia.dev** with:
+Use GitHub's **private vulnerability reporting**: go to the repository's
+[**Security** tab → **Report a vulnerability**](https://github.com/arbazkhan971/rustmedia/security/advisories/new).
+Please include:
 
 - a description of the issue and its impact,
 - the affected version(s),

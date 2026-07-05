@@ -6,7 +6,7 @@
 
 Inspect, parse, remux, trim, and extract **MP4 · MOV · WAV · MP3** — with a native, zero‑`unsafe` engine and **no C dependencies**.
 
-[![CI](https://github.com/rustmedia/rustmedia/actions/workflows/ci.yml/badge.svg)](https://github.com/rustmedia/rustmedia/actions/workflows/ci.yml)
+[![CI](https://github.com/arbazkhan971/rustmedia/actions/workflows/ci.yml/badge.svg)](https://github.com/arbazkhan971/rustmedia/actions/workflows/ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/rustmedia.svg)](https://crates.io/crates/rustmedia)
 [![Docs.rs](https://img.shields.io/docsrs/rustmedia)](https://docs.rs/rustmedia)
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](#license)
@@ -179,7 +179,7 @@ See the full [roadmap](docs/roadmap.md).
 ## Building from source
 
 ```bash
-git clone https://github.com/rustmedia/rustmedia
+git clone https://github.com/arbazkhan971/rustmedia
 cd rustmedia
 cargo build --release
 

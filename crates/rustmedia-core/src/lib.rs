@@ -1,6 +1,6 @@
 //! # rustmedia-core
 //!
-//! The shared type vocabulary of the [RustMedia](https://github.com/rustmedia/rustmedia)
+//! The shared type vocabulary of the [RustMedia](https://github.com/arbazkhan971/rustmedia)
 //! toolkit: errors, timestamps, codecs, tracks, packets, metadata, and format
 //! identifiers. Every other RustMedia crate — parsers, muxers, the CLI, the
 //! bindings — speaks in these types.
