@@ -57,6 +57,11 @@ cast_sign_loss = "allow"
 cast_possible_wrap = "allow"
 cast_precision_loss = "allow"
 too_many_lines = "allow"
+# Four-character codes are `[u8; 4]` and read best passed by reference and
+# matched with `b"..."` patterns; parsers also carry many short, similar locals
+# (stco/stsc/stsz, dts/pts). These two pedantic lints fight that idiom.
+trivially_copy_pass_by_ref = "allow"
+similar_names = "allow"
 
 # Optimised profile for the release binaries and benchmarks.
 [profile.release]
