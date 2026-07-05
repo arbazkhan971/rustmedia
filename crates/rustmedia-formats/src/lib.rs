@@ -24,9 +24,9 @@
 //! | Format         | Demux | Notes                                  |
 //! |----------------|:-----:|----------------------------------------|
 //! | MP4 / MOV      |   ✅   | ISO-BMFF, non-fragmented, `co64`, `ctts` |
+//! | WAV            |   ✅   | RIFF PCM/float, `LIST`/`INFO` tags     |
+//! | MP3            |   ✅   | frame sync, Xing VBR, ID3v2/ID3v1      |
 //! | Matroska/WebM  |   🚧   | in progress                            |
-//! | WAV            |   🚧   | in progress                            |
-//! | MP3            |   🚧   | in progress                            |
 
 use std::io::{Read, Seek};
 
@@ -34,11 +34,15 @@ use rustmedia_core::{ContainerFormat, Error, Result};
 
 pub mod demux;
 pub mod detect;
+pub mod mp3;
 pub mod mp4;
+pub mod wav;
 
 pub use demux::Demuxer;
 pub use detect::{detect, detect_bytes};
+pub use mp3::Mp3Demuxer;
 pub use mp4::Mp4Demuxer;
+pub use wav::WavDemuxer;
 
 /// Detect the format of `reader` and return a demuxer for it.
 ///
@@ -53,6 +57,8 @@ pub use mp4::Mp4Demuxer;
 pub fn open<R: Read + Seek + 'static>(mut reader: R) -> Result<Box<dyn Demuxer>> {
     match detect(&mut reader)? {
         Some(ContainerFormat::Mp4 | ContainerFormat::Mov) => Ok(Box::new(Mp4Demuxer::new(reader)?)),
+        Some(ContainerFormat::Wav) => Ok(Box::new(WavDemuxer::new(reader)?)),
+        Some(ContainerFormat::Mp3) => Ok(Box::new(Mp3Demuxer::new(reader)?)),
         Some(other) => Err(Error::unsupported(format!(
             "{other} demuxing is not yet implemented"
         ))),

@@ -16,5 +16,11 @@ doc-valid-idents = [
     "ISO-BMFF",
     "iTunes",
     "ProRes",
+    "ID3v2",
+    "ID3v1",
+    "ISO-8859-1",
+    "UTF-8",
+    "UTF-16",
+    "VBRI",
     "..",
 ]
