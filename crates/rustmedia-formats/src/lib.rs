@@ -36,12 +36,14 @@ pub mod demux;
 pub mod detect;
 pub mod mp3;
 pub mod mp4;
+pub mod mux;
 pub mod wav;
 
 pub use demux::Demuxer;
 pub use detect::{detect, detect_bytes};
 pub use mp3::Mp3Demuxer;
-pub use mp4::Mp4Demuxer;
+pub use mp4::{Mp4Demuxer, Mp4Muxer};
+pub use mux::Muxer;
 pub use wav::WavDemuxer;
 
 /// Detect the format of `reader` and return a demuxer for it.

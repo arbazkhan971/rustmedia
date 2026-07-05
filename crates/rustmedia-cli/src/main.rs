@@ -4,6 +4,7 @@
 //! full command list.
 
 mod inspect;
+mod transform;
 mod ui;
 
 use std::process::ExitCode;
@@ -29,6 +30,12 @@ struct Cli {
 enum Command {
     /// Inspect a media file: format, tracks, duration, metadata, chapters.
     Inspect(inspect::InspectArgs),
+    /// Remux to another container without re-encoding (e.g. MOV → MP4).
+    Remux(transform::RemuxArgs),
+    /// Trim to a time range, keyframe-aware and lossless.
+    Trim(transform::TrimArgs),
+    /// Extract selected tracks into a new file without re-encoding.
+    Extract(transform::ExtractArgs),
 }
 
 fn main() -> ExitCode {
@@ -36,6 +43,9 @@ fn main() -> ExitCode {
 
     let result = match cli.command {
         Command::Inspect(args) => inspect::run(&args),
+        Command::Remux(args) => transform::run_remux(&args),
+        Command::Trim(args) => transform::run_trim(&args),
+        Command::Extract(args) => transform::run_extract(&args),
     };
 
     match result {
