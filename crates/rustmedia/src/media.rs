@@ -142,7 +142,7 @@ impl Media {
     /// for video.
     ///
     /// # Errors
-    /// Returns [`Error::Unsupported`] if the format cannot seek.
+    /// Returns an `Unsupported` error if the format cannot seek.
     pub fn seek(&mut self, target: Duration) -> Result<()> {
         self.demuxer.seek(target)
     }

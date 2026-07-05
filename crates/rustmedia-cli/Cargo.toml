@@ -13,6 +13,9 @@ documentation.workspace = true
 [[bin]]
 name = "rustmedia"
 path = "src/main.rs"
+# The binary is named `rustmedia`, same as the library crate; skip its rustdoc
+# output so `cargo doc --workspace` doesn't collide on `rustmedia/index.html`.
+doc = false
 
 [dependencies]
 rustmedia = { workspace = true, features = ["serde"] }
