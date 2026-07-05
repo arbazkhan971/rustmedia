@@ -102,7 +102,10 @@ impl Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Error::Io(e) => write!(f, "I/O error: {e}"),
+            // The underlying error is exposed via `source()`, so error
+            // reporters that walk the chain (anyhow's `{:#}`, the CLI) print the
+            // detail without this line duplicating it.
+            Error::Io(_) => f.write_str("I/O error"),
             Error::UnexpectedEof(what) => {
                 write!(f, "unexpected end of input while reading {what}")
             }
